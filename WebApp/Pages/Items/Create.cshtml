@@ -14,6 +14,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(m => m.ReturnToJobId)
             <div class="form-group">
                 <label asp-for="Entity.Name" class="control-label"></label>
                 <input asp-for="Entity.Name" class="form-control" />
@@ -33,7 +34,7 @@
                 <select asp-for="Entity.CategoryId" class ="form-control" asp-items="@Model.Categories"></select>
             </div>
             <div>
-                <a asp-page="/Categories/Create" asp-route-ReturnToItemCreate="@bool.TrueString">Create new category</a>
+                <a asp-page="/Categories/Create" asp-route-ReturnToItemCreate="@bool.TrueString" asp-route-ReturnToJobId="@Model.ReturnToJobId">Create new category</a>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -44,6 +45,10 @@
 
 <div>
     <a asp-page="Index">Back to List</a>
+    @if (Model.ReturnToJobId != null)
+    {
+        <a asp-page="/Jobs/ManageItems" asp-route-id="@Model.ReturnToJobId"></a>
+    }
 </div>
 
 @section Scripts {

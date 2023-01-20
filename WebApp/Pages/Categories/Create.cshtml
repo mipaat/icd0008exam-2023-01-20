@@ -13,6 +13,7 @@
     <div class="col-md-4">
         <form method="post">
             @Html.HiddenFor(m => m.ReturnToItemCreate)
+            @Html.HiddenFor(m => m.ReturnToJobId)
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Entity.Name" class="control-label"></label>
@@ -28,6 +29,14 @@
 
 <div>
     <a asp-page="Index">Back to List</a>
+    @if (Model.ReturnToItemCreate)
+    {
+        <a asp-page="/Items/Create" asp-route-ReturnToJobId="@Model.ReturnToJobId">Return to item creation</a>
+    }
+    @if (Model.ReturnToJobId != null)
+    {
+        <a asp-page="/Jobs/ManageItems" asp-route-id="@Model.ReturnToJobId"></a>
+    }
 </div>
 
 @section Scripts {

@@ -1,39 +1,23 @@
+using DAL;
+using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.Jobs
+namespace WebApp.Pages.Jobs;
+
+public class CreateModel : CreateModel<Job>
 {
-    public class CreateModel : PageModel
+    public CreateModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
+    }
 
-        public CreateModel(DAL.AppDbContext context)
-        {
-            _context = context;
-        }
+    protected override JobRepository Repository => Ctx.Jobs;
 
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
-
-        [BindProperty]
-        public Job Job { get; set; } = default!;
-        
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.Jobs == null || Job == null)
-            {
-                return Page();
-            }
-
-            _context.Jobs.Add(Job);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+    public override async Task<IActionResult> OnPostAsync()
+    {
+        var result = await base.OnPostAsync();
+        if (Success) return RedirectToPage("./ManageItems", new { Entity.Id });
+        return result;
     }
 }

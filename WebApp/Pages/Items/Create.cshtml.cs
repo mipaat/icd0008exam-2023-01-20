@@ -13,6 +13,9 @@ public class CreateModel : CreateModel<Item>
     {
     }
 
+    [BindProperty(SupportsGet = true)] public int? ReturnToJobId { get; set; }
+    [BindProperty(SupportsGet = true)] public int? SelectedCategoryId { get; set; }
+
     public IEnumerable<SelectListItem> Categories { get; set; } = default!;
     [BindProperty] public string PriceString { get; set; } = "0";
 
@@ -23,21 +26,31 @@ public class CreateModel : CreateModel<Item>
         var categories = new List<SelectListItem>();
         foreach (var category in await Ctx.Categories.GetAllAsync())
         {
-            categories.Add(new SelectListItem(category.Name, category.Id.ToString(), Entity?.CategoryId == category.Id));
+            categories.Add(new SelectListItem(category.Name, category.Id.ToString(),
+                Entity?.CategoryId == category.Id));
         }
 
         Categories = categories;
     }
-    
+
     public async Task OnGetAsync()
     {
+        if (SelectedCategoryId != null)
+        {
+            Entity = new Item
+            {
+                CategoryId = SelectedCategoryId.Value
+            };
+        }
         await InitializeCategories();
     }
-    
+
     public override async Task<IActionResult> OnPostAsync()
     {
         await InitializeCategories();
         Entity.Price = decimal.Parse(PriceString);
-        return await base.OnPostAsync();
+        var result = await base.OnPostAsync();
+        if (ReturnToJobId != null) return RedirectToPage("/Jobs/ManageItems", new { Id = ReturnToJobId });
+        return result;
     }
 }
