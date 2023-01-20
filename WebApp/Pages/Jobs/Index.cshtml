@@ -14,16 +14,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Job[0].Name)
+                @Html.DisplayNameFor(model => model.Entities[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Entities[0].TotalPrice)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Job) {
+@foreach (var item in Model.Entities) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
                 <a asp-page="./ManageItems" class="btn btn-primary" asp-route-id="@item.Id">Manage items</a>

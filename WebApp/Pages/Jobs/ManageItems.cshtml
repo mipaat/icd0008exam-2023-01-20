@@ -1,4 +1,6 @@
 ﻿@page
+@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using WebApp.MyLibraries
 @model WebApp.Pages.Jobs.ManageItems
 
@@ -42,6 +44,13 @@
         <div>
             <a class="btn btn-primary" asp-page="/Items/Create" asp-route-ReturnToJobId="@Model.Id">Create new item</a>
         </div>
+        @{
+            ViewData["HiddenFields"] = new List<IHtmlContent>
+            {
+                Html.HiddenFor(m => m.Id)
+            };
+            await Html.RenderPartialAsync("Shared/ItemSearch");
+        }
         @if (Model.Items.Count > 0)
         {
             <div class="d-flex flex-column @CssCombos.ExternalContainer">

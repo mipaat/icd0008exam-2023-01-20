@@ -1,12 +1,14 @@
 ﻿using DAL;
 using DAL.Repositories;
 using Domain;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.MyLibraries.PageModels;
+using WebApp.Pages.Shared;
 
 namespace WebApp.Pages.Jobs;
 
-public class ManageItems : EntityModel<Job>
+public class ManageItems : EntityModel<Job>, IItemSearch
 {
     public ManageItems(RepositoryContext ctx) : base(ctx)
     {
@@ -24,9 +26,17 @@ public class ManageItems : EntityModel<Job>
     [BindProperty] public bool UpdateJobItem { get; set; }
     [BindProperty] public bool RemoveJobItem { get; set; }
 
+    
+    [BindProperty(SupportsGet = true)] public string? ItemNameQuery { get; set; }
+    [BindProperty(SupportsGet = true)] public string? CategoryNameQuery { get; set; }
+    [BindProperty(SupportsGet = true)] public int? MinQuantityQuery { get; set; }
+    public int MinQuantity => MinQuantityQuery ?? 0;
+    [BindProperty(SupportsGet = true)] public int? MaxQuantityQuery { get; set; }
+    public int MaxQuantity => MaxQuantityQuery ?? int.MaxValue;
+
     private async Task InitializeItems()
     {
-        Items = (await Ctx.Items.GetAllAsync())
+        Items = (await Ctx.Items.GetAllAsync(IItemSearch.Filters(this).ToArray()))
             .Where(i => Entity.JobItems!.All(ji => ji.ItemId != i.Id))
             .ToList();
     }
@@ -34,7 +44,7 @@ public class ManageItems : EntityModel<Job>
     public override async Task<IActionResult> OnGetAsync()
     {
         var result = await base.OnGetAsync();
-        await InitializeItems();
+        if (Success) await InitializeItems();
         return result;
     }
 

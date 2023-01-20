@@ -8,34 +8,7 @@
 
 <h1>Items</h1>
 
-<div>
-    <form method="get" class="d-flex gap-1">
-        @{
-            const string itemNameQuery = nameof(Model.ItemNameQuery);
-            const string categoryNameQuery = nameof(Model.CategoryNameQuery);
-            const string minQuantityQuery = nameof(Model.MinQuantityQuery);
-            const string maxQuantityQuery = nameof(Model.MaxQuantityQuery);
-        }
-        <div>
-            <label for="@itemNameQuery">Search by item name(s)</label><br/>
-            <input id="@itemNameQuery" type="search" name="@itemNameQuery" value="@Model.ItemNameQuery"/>
-        </div>
-        <div>
-            <label for="@categoryNameQuery">Search by category name(s)</label><br/>
-            <input id="@categoryNameQuery" type="search" name="@categoryNameQuery" value="@Model.CategoryNameQuery"/>
-        </div>
-        <div>
-            <label for="@minQuantityQuery">Min quantity:</label><br/>
-            <input id="@minQuantityQuery" type="search" name="@minQuantityQuery" value="@Model.MinQuantityQuery"/>
-        </div>
-        <div>
-            <label for="@maxQuantityQuery">Max quantity:</label><br/>
-            <input id="@maxQuantityQuery" type="search" name="@maxQuantityQuery" value="@Model.MaxQuantityQuery"/>
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a asp-page="" class="btn btn-info">Clear filters</a>
-    </form>
-</div>
+@await Html.PartialAsync("Shared/ItemSearch")
 
 <p>
     <a asp-page="Create">Create New</a>

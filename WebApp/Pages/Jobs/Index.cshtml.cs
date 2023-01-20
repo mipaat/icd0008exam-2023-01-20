@@ -1,26 +1,17 @@
+using DAL;
+using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.Jobs
+namespace WebApp.Pages.Jobs;
+
+public class IndexModel : IndexModel<Job>
 {
-    public class IndexModel : PageModel
+    public IndexModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
-
-        public IndexModel(DAL.AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public IList<Job> Job { get;set; } = default!;
-
-        public async Task OnGetAsync()
-        {
-            if (_context.Jobs != null)
-            {
-                Job = await _context.Jobs.ToListAsync();
-            }
-        }
     }
+
+    protected override JobRepository Repository => Ctx.Jobs;
 }
