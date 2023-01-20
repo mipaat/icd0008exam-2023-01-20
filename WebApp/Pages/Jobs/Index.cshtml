@@ -29,6 +29,7 @@
     @foreach (var item in Model.Entities)
     {
         <tr>
+            @{ var missingItems = item.MissingItems(Model.Items); }
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -36,7 +37,6 @@
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
-                @{ var missingItems = item.MissingItems(Model.Items); }
                 @if (missingItems.Count > 0)
                 {
                     <div class="text-danger">
@@ -70,6 +70,10 @@
                 }
             </td>
             <td>
+                @if (missingItems.Count == 0)
+                {
+                    <a asp-page="/PerformedJobs/Create" asp-route-JobId="@item.Id">Perform job</a>
+                }
                 <a asp-page="./ManageItems" class="btn btn-primary" asp-route-id="@item.Id">Manage items</a>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |

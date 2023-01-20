@@ -60,7 +60,10 @@
                         @foreach (var itemInStock in item.ItemInStocks!)
                         {
                             <div>
-                                Location: <span class="btn btn-primary fake-btn">@itemInStock.Location</span>
+                                @if (itemInStock.Location != null)
+                                {
+                                    @:Location: <span class="btn btn-primary fake-btn">@itemInStock.Location</span>
+                                }
                                 Quantity: <span class="btn btn-primary fake-btn">@itemInStock.Quantity</span>
                             </div>
                         }

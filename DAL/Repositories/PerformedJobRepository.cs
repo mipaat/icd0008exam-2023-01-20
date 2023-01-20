@@ -10,4 +10,13 @@ public class PerformedJobRepository : AbstractDbRepository<PerformedJob>
     }
 
     protected override DbSet<PerformedJob> ThisDbSet => DbContext.PerformedJobs;
+
+    protected override IQueryable<PerformedJob> DefaultIncludes(IQueryable<PerformedJob> queryable)
+    {
+        return queryable
+            .Include(pj => pj.Job)
+            .Include(pj => pj.UsedItems)!
+            .ThenInclude(ui => ui.Item)
+            .ThenInclude(i => i!.Category);
+    }
 }

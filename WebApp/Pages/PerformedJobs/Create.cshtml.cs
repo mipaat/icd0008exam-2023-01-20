@@ -1,41 +1,55 @@
+using DAL;
+using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.PerformedJobs
+namespace WebApp.Pages.PerformedJobs;
+
+public class CreateModel : CreateModel<PerformedJob>
 {
-    public class CreateModel : PageModel
+    public CreateModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
+    }
 
-        public CreateModel(DAL.AppDbContext context)
+    [BindProperty(SupportsGet = true)] public int? JobId { get; set; }
+    public IEnumerable<SelectListItem> Jobs { get; set; } = default!;
+    public Job? Job { get; set; }
+
+    protected override PerformedJobRepository Repository => Ctx.PerformedJobs;
+
+    private async Task InitializeJobs()
+    {
+        var result = new List<SelectListItem>();
+        foreach (var job in await Ctx.Jobs.GetAllAsync())
         {
-            _context = context;
+            result.Add(new SelectListItem(job.Name, job.Id.ToString(), job.Id == Entity?.JobId));
         }
 
-        public IActionResult OnGet()
+        Jobs = result;
+    }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        if (JobId != null)
         {
-        ViewData["JobId"] = new SelectList(_context.Jobs, "Id", "Name");
-            return Page();
+            var job = await Ctx.Jobs.GetByIdAsync(JobId.Value);
+            if (job == null) return NotFound();
+            Job = job;
+            Entity = new PerformedJob { JobId = JobId, Job = Job, Name = Job.Name, TotalCost = Job.TotalPrice };
         }
 
-        [BindProperty]
-        public PerformedJob PerformedJob { get; set; } = default!;
-        
+        await InitializeJobs();
+        return Page();
+    }
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.PerformedJobs == null || PerformedJob == null)
-            {
-                return Page();
-            }
+    public override async Task<IActionResult> OnPostAsync()
+    {
+        await InitializeJobs();
 
-            _context.PerformedJobs.Add(PerformedJob);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+        var result = await base.OnPostAsync();
+        if (!Success) return result;
+        return RedirectToPage("./ManageItems", new { Entity.Id, AddJobItemsId = Entity.JobId });
     }
 }

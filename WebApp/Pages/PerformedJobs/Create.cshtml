@@ -14,18 +14,18 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="PerformedJob.Name" class="control-label"></label>
-                <input asp-for="PerformedJob.Name" class="form-control" />
-                <span asp-validation-for="PerformedJob.Name" class="text-danger"></span>
+                <label asp-for="Entity.Name" class="control-label"></label>
+                <input asp-for="Entity.Name" class="form-control" />
+                <span asp-validation-for="Entity.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PerformedJob.TotalCost" class="control-label"></label>
-                <input asp-for="PerformedJob.TotalCost" class="form-control" />
-                <span asp-validation-for="PerformedJob.TotalCost" class="text-danger"></span>
+                <label asp-for="Entity.Context" class="control-label"></label>
+                <input asp-for="Entity.Context" class="form-control" />
+                <span asp-validation-for="Entity.Context" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PerformedJob.JobId" class="control-label"></label>
-                <select asp-for="PerformedJob.JobId" class ="form-control" asp-items="ViewBag.JobId"></select>
+                <label asp-for="Entity.JobId" class="control-label"></label>
+                <select asp-for="Entity.JobId" class ="form-control" asp-items="@Model.Jobs"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

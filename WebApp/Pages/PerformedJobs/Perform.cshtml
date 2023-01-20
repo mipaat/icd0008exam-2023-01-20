@@ -1,0 +1,24 @@
+﻿@page
+@model WebApp.Pages.PerformedJobs.Perform
+
+@{
+    ViewData["Title"] = "Perform job";
+}
+
+<h3>Perform job @Model.Entity.Name?</h3>
+<a asp-page="./ManageItems" asp-route-id="@Model.Id">Return to job view</a>
+
+@{ await Html.RenderPartialAsync("Shared/ErrorView"); }
+
+<div>
+    <form method="post">
+        @Html.HiddenFor(m => m.Id)
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Performed" class="control-label"></label>
+            <input asp-for="Performed" class="form-control" />
+            <span asp-validation-for="Performed" class="text-danger"></span>
+        </div>
+        <button class="btn btn-primary">Perform</button>
+    </form>
+</div>

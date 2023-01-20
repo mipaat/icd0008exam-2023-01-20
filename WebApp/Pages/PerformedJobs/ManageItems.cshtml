@@ -1,0 +1,80 @@
+﻿@page
+@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebApp.MyLibraries
+@model WebApp.Pages.PerformedJobs.ManageItems
+
+@{
+    ViewData["Title"] = "Manage performed job items";
+}
+
+@{ await Html.RenderPartialAsync("Shared/ErrorView"); }
+
+@if (Model.Entity.Performed != null)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <h4>Items used</h4>
+            @foreach (var item in Model.Entity.UsedItems!)
+            {
+                <pre>
+                    Name: @item.Item!.Name
+                    Quantity: @item.Quantity
+                </pre>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <a class="btn btn-outline-danger" asp-page="./Perform" asp-route-id="@Model.Id">Perform job (will disable further editing!)</a>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <h4>Items used</h4>
+            <div class="@CssCombos.ExternalContainer">
+                @foreach (var item in Model.Entity.UsedItems!)
+                {
+                    <div class="@CssCombos.InnerContainer">
+                        Item: @item.Item!.Name
+                        <form method="post">
+                            @Html.HiddenFor(m => m.Id)
+                            @WebUtils.HiddenFor(Html, m => m.UsedItemId, item.Id)
+                            @WebUtils.TextBoxFor(Html, m => m.UpdatedQuantity, item.Quantity)
+                            @WebUtils.ButtonPrimaryFor(Html, m => m.UpdateUsedItem, "Update")
+                            @WebUtils.ButtonDangerFor(Html, m => m.RemoveUsedItem, "Remove")
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-5">
+            <h4>Other items</h4>
+            @{
+                ViewData["HiddenFields"] = new List<IHtmlContent>
+                {
+                    Html.HiddenFor(m => m.Id)
+                };
+                await Html.RenderPartialAsync("Shared/ItemSearch");
+            }
+            <div class="@CssCombos.ExternalContainer">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="@CssCombos.InnerContainer d-flex gap-3">
+                        Name: @item.Name
+                        <form method="post" class="d-flex gap-3">
+                            @Html.HiddenFor(m => m.Id)
+                            @WebUtils.HiddenFor(Html, m => m.UsedItem.ItemId, item.Id)
+                            @WebUtils.HiddenFor(Html, m => m.UsedItem.PerformedJobId, Model.Entity.Id)
+                            <dpan class="form-group d-flex gap-1">
+                                <label asp-for="UsedItem.Quantity" class="control-label">Quantity: </label>
+                                <input asp-for="UsedItem.Quantity" class="form-control w-smallish"/>
+                                <span asp-validation-for="UsedItem.Quantity" class="text-danger"></span>
+                            </dpan>
+                            @WebUtils.ButtonSuccessFor(Html, m => m.AddUsedItem, "Add")
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
