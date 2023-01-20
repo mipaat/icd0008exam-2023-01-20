@@ -1,0 +1,12 @@
+﻿@model IMissingItems
+
+@if (Model.MissingItems.Count > 0)
+{
+    <div class="text-danger">
+        Missing items:
+        @foreach (var missingItem in Model.MissingItems)
+        {
+            <div>@missingItem.Item.Name (Missing amount: @missingItem.Quantity)</div>
+        }
+    </div>
+}

@@ -32,4 +32,7 @@ public class PerformedJob : AbstractDbEntity
 
         return result;
     }
+
+    [NotMapped] public decimal? TotalItemsCost => UsedItems?.Sum(ui => ui.TotalCost);
+    [NotMapped] public decimal? Cost => TotalCost ?? TotalItemsCost;
 }

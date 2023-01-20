@@ -1,27 +1,33 @@
+using DAL;
+using DAL.Filters;
+using DAL.Repositories;
 using Domain;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using WebApp.MyLibraries;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.PerformedJobs
+namespace WebApp.Pages.PerformedJobs;
+
+public class IndexModel : IndexModel<PerformedJob>
 {
-    public class IndexModel : PageModel
+    public IndexModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
+    }
 
-        public IndexModel(DAL.AppDbContext context)
+    protected override PerformedJobRepository Repository => Ctx.PerformedJobs;
+
+    [BindProperty(SupportsGet = true)]
+    public PerformedJobCompletionFilter PerformedJobCompletionFilter { get; set; } = PerformedJobCompletionFilter.Default;
+
+    [BindProperty(SupportsGet = true)] public string? ContextQuery { get; set; }
+
+    protected override IEnumerable<FilterFunc<PerformedJob>> Filters
+    {
+        get
         {
-            _context = context;
-        }
-
-        public IList<PerformedJob> PerformedJob { get;set; } = default!;
-
-        public async Task OnGetAsync()
-        {
-            if (_context.PerformedJobs != null)
-            {
-                PerformedJob = await _context.PerformedJobs
-                .Include(p => p.Job).ToListAsync();
-            }
+            var result = new List<FilterFunc<PerformedJob>> { PerformedJobCompletionFilter.FilterFunc };
+            result.AddRange(WebUtils.GetFiltersFromQuery<PerformedJob>(ContextQuery, pj => pj.Context));
+            return result;
         }
     }
 }

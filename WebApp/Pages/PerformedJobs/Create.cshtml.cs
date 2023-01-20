@@ -37,7 +37,7 @@ public class CreateModel : CreateModel<PerformedJob>
             var job = await Ctx.Jobs.GetByIdAsync(JobId.Value);
             if (job == null) return NotFound();
             Job = job;
-            Entity = new PerformedJob { JobId = JobId, Job = Job, Name = Job.Name, TotalCost = Job.TotalPrice };
+            Entity = new PerformedJob { JobId = JobId, Job = Job, Name = Job.Name, TotalCost = Job.TotalCost };
         }
 
         await InitializeJobs();

@@ -2,15 +2,13 @@ using DAL;
 using DAL.Filters;
 using DAL.Repositories;
 using Domain;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.MyLibraries;
 using WebApp.MyLibraries.PageModels;
 using WebApp.Pages.Shared;
 
 namespace WebApp.Pages.Items;
 
-public class IndexModel : IndexModel<Item>, IItemSearch
+public class IndexModel : IndexModel<Item>, IItemSearch, IMissingItems
 {
     public IndexModel(RepositoryContext ctx) : base(ctx)
     {
@@ -26,4 +24,22 @@ public class IndexModel : IndexModel<Item>, IItemSearch
     protected override IEnumerable<FilterFunc<Item>> Filters => IItemSearch.Filters(this);
 
     protected override ItemRepository Repository => Ctx.Items;
+
+    public ICollection<ItemWithQuantity> MissingItems
+    {
+        get
+        {
+            var result = new List<ItemWithQuantity>();
+            foreach (var item in Entities)
+            {
+                var quantityDiff = item.Quantity!.Value - item.OptimalQuantity;
+                if (quantityDiff < 0)
+                {
+                    result.Add(new ItemWithQuantity(item, -quantityDiff));
+                }
+            }
+
+            return result;
+        }
+    }
 }

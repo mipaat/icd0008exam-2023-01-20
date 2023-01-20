@@ -8,7 +8,7 @@ public class CustomModelBinderProvider<T> : IModelBinderProvider
 
     private static List<ICustomModelBinder> ModelBinders => new()
     {
-        // new SomeFilterBinder()
+        new PerformedJobCompletionFilterModelBinder()
     };
 
     public IModelBinder? GetBinder(ModelBinderProviderContext context)

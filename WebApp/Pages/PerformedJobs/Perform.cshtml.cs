@@ -19,6 +19,7 @@ public class Perform : EntityModel<PerformedJob>, IErrorView
     [BindProperty(SupportsGet = true)] public string? ErrorMessage { get; set; }
 
     [BindProperty] public DateTime Performed { get; set; } = DateTime.UtcNow;
+    [BindProperty] public decimal TotalCost { get; set; }
 
     public ICollection<Item> Items { get; set; } = default!;
     public ICollection<ItemWithQuantity> MissingItems { get; set; } = default!;
@@ -32,7 +33,11 @@ public class Perform : EntityModel<PerformedJob>, IErrorView
     public override async Task<IActionResult> OnGetAsync()
     {
         var result = await base.OnGetAsync();
-        if (Success) Entity.Performed = DateTime.UtcNow;
+        if (Success)
+        {
+            Performed = Entity.Performed ?? DateTime.UtcNow;
+            TotalCost = Entity.Cost!.Value;
+        }
         await InitializeItems();
         if (MissingItems.Count > 0)
         {
@@ -63,6 +68,7 @@ public class Perform : EntityModel<PerformedJob>, IErrorView
         }
 
         Entity.Performed = Performed;
+        Entity.TotalCost = TotalCost;
 
         await Ctx.SaveChangesAsync();
         return RedirectToPage("./ManageItems", new { Id });

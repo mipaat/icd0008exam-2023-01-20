@@ -1,6 +1,8 @@
 using System.Globalization;
 using DAL;
+using DAL.Filters;
 using Microsoft.AspNetCore.Localization;
+using WebApp.MyLibraries.ModelBinders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages()
     .AddMvcOptions(options =>
     {
-        // options.ModelBinderProviders.Insert(0, new CustomModelBinderProvider<SomeFilter>());
+        options.ModelBinderProviders.Insert(0, new CustomModelBinderProvider<PerformedJobCompletionFilter>());
     });
 builder.Services.AddDbContext<AppDbContext>(AppDbContextFactory.ConfigureOptions);
 builder.Services.AddScoped<RepositoryContext>();

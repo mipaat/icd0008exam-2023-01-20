@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain;
 
 public class UsedItem : AbstractDbEntity
 {
@@ -20,4 +22,6 @@ public class UsedItem : AbstractDbEntity
         Item = jobItem.Item;
         PerformedJobId = performedJobId;
     }
+
+    [NotMapped] public decimal? TotalCost => Quantity * Item?.Price;
 }

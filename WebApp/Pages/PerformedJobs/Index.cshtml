@@ -1,4 +1,7 @@
 @page
+@using DAL.Filters
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebApp.MyLibraries
 @model IndexModel
 
 @{
@@ -7,6 +10,27 @@
 
 <h1>Index</h1>
 
+<div class="d-flex gap-4">
+    <form method="GET" class="d-flex gap-4">
+        @{
+            const string completionFilter = nameof(Model.PerformedJobCompletionFilter);
+            const string contextQuery = nameof(Model.ContextQuery);
+        }
+        <div>
+            <label for="@completionFilter">Filter by completion</label><br/>
+            <select id="@completionFilter" asp-items="@WebUtils.GetSelectOptions(PerformedJobCompletionFilter.Values, Model.PerformedJobCompletionFilter)" name="@completionFilter"></select>
+        </div>
+        <div>
+            <label for="@contextQuery">Search by context string</label><br/>
+            <input id="@contextQuery" type="search" name="@contextQuery" value="@Model.ContextQuery"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Filter</button>
+    </form>
+    <form>
+        <button type="submit" class="btn btn-primary">Clear filters</button>
+    </form>
+</div>
+
 <p>
     <a asp-page="Create">Create New</a>
 </p>
@@ -14,25 +38,37 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PerformedJob[0].Name)
+                @Html.DisplayNameFor(model => model.Entities[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PerformedJob[0].TotalCost)
+                @Html.DisplayNameFor(model => Model.Entities[0].Performed)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PerformedJob[0].Job)
+                @Html.DisplayNameFor(model => Model.Entities[0].Context)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Entities[0].Cost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Entities[0].Job)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.PerformedJob) {
+@foreach (var item in Model.Entities) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalCost)
+                @Html.DisplayFor(modelItem => item.Performed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Context)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Job!.Name)
