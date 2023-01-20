@@ -1,41 +1,43 @@
+using DAL;
+using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.Items
+namespace WebApp.Pages.Items;
+
+public class CreateModel : CreateModel<Item>
 {
-    public class CreateModel : PageModel
+    public CreateModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
+    }
 
-        public CreateModel(DAL.AppDbContext context)
+    public IEnumerable<SelectListItem> Categories { get; set; } = default!;
+    [BindProperty] public string PriceString { get; set; } = "0";
+
+    protected override ItemRepository Repository => Ctx.Items;
+
+    private async Task InitializeCategories()
+    {
+        var categories = new List<SelectListItem>();
+        foreach (var category in await Ctx.Categories.GetAllAsync())
         {
-            _context = context;
+            categories.Add(new SelectListItem(category.Name, category.Id.ToString(), Entity?.CategoryId == category.Id));
         }
 
-        public IActionResult OnGet()
-        {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            return Page();
-        }
-
-        [BindProperty]
-        public Item Item { get; set; } = default!;
-        
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.Items == null || Item == null)
-            {
-                return Page();
-            }
-
-            _context.Items.Add(Item);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+        Categories = categories;
+    }
+    
+    public async Task OnGetAsync()
+    {
+        await InitializeCategories();
+    }
+    
+    public override async Task<IActionResult> OnPostAsync()
+    {
+        await InitializeCategories();
+        Entity.Price = decimal.Parse(PriceString);
+        return await base.OnPostAsync();
     }
 }

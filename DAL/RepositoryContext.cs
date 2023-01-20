@@ -1,4 +1,6 @@
-﻿namespace DAL;
+﻿using DAL.Repositories;
+
+namespace DAL;
 
 public class RepositoryContext : IDisposable, IAsyncDisposable
 {
@@ -9,7 +11,13 @@ public class RepositoryContext : IDisposable, IAsyncDisposable
         _dbContext = AppDbContextFactory.CreateDbContext();
     }
 
-    // public EntityRepository Entities => new(_dbContext, this);
+    public CategoryRepository Categories => new(_dbContext, this);
+    public ItemInStockRepository ItemInStocks => new(_dbContext, this);
+    public ItemRepository Items => new(_dbContext, this);
+    public JobItemRepository JobItems => new(_dbContext, this);
+    public JobRepository Jobs => new(_dbContext, this);
+    public PerformedJobRepository PerformedJobs => new(_dbContext, this);
+    public UsedItemRepository UsedItems => new(_dbContext, this);
 
     public void SaveChanges()
     {

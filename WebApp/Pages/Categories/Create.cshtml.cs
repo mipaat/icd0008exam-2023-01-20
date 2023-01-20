@@ -1,39 +1,25 @@
+using DAL;
+using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebApp.MyLibraries.PageModels;
 
-namespace WebApp.Pages.Categories
+namespace WebApp.Pages.Categories;
+
+public class CreateModel : CreateModel<Category>
 {
-    public class CreateModel : PageModel
+    public CreateModel(RepositoryContext ctx) : base(ctx)
     {
-        private readonly DAL.AppDbContext _context;
+    }
+    
+    [BindProperty(SupportsGet = true)] public bool ReturnToItemCreate { get; set; }
 
-        public CreateModel(DAL.AppDbContext context)
-        {
-            _context = context;
-        }
+    protected override CategoryRepository Repository => Ctx.Categories;
 
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
-
-        [BindProperty]
-        public Category Category { get; set; } = default!;
-        
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.Categories == null || Category == null)
-            {
-                return Page();
-            }
-
-            _context.Categories.Add(Category);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+    public override async Task<IActionResult> OnPostAsync()
+    {
+        var result = await base.OnPostAsync();
+        if (Success && ReturnToItemCreate) return RedirectToPage("/Items/Create");
+        return result;
     }
 }

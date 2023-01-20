@@ -108,6 +108,38 @@ public static class WebUtils
         return contentBuilder;
     }
 
+    public static IHtmlContent TextBoxForDecimal<TModel, TProperty>(
+        IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, decimal? value,
+        int decimals = 2, string @class = "", bool appendValidationMessage = true)
+    {
+        var propertyName = GetPropertyName(htmlHelper, expression);
+        
+        @class = SingleSpaces(@class);
+        string step;
+        if (decimals < 0)
+        {
+            step = "any";
+        }
+        else if (decimals == 0)
+        {
+            step = "1";
+            value = Math.Round(value.GetValueOrDefault(), decimals);
+        }
+        else
+        {
+            step = "0." + new string('0', decimals - 1) + "1";
+            value = Math.Round(value.GetValueOrDefault(), decimals);
+        }
+
+        var htmlAttributes = new { @class, type = "number", step };
+
+        var contentBuilder = new HtmlContentBuilder()
+            .AppendHtml(htmlHelper.TextBox(propertyName, value, htmlAttributes));
+        if (appendValidationMessage)
+            contentBuilder = contentBuilder.AppendHtml(ValidationMessageFor(htmlHelper, expression));
+        return contentBuilder;
+    }
+
     private static IHtmlContent ValidationMessageFor<TModel, TProperty>(
         IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string tagName = "span")
     {

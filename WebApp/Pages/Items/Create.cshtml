@@ -1,4 +1,5 @@
 @page
+@using WebApp.MyLibraries
 @model CreateModel
 
 @{
@@ -14,23 +15,25 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Item.Name" class="control-label"></label>
-                <input asp-for="Item.Name" class="form-control" />
-                <span asp-validation-for="Item.Name" class="text-danger"></span>
+                <label asp-for="Entity.Name" class="control-label"></label>
+                <input asp-for="Entity.Name" class="form-control" />
+                <span asp-validation-for="Entity.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item.OptimalQuantity" class="control-label"></label>
-                <input asp-for="Item.OptimalQuantity" class="form-control" />
-                <span asp-validation-for="Item.OptimalQuantity" class="text-danger"></span>
+                <label asp-for="Entity.OptimalQuantity" class="control-label"></label>
+                <input asp-for="Entity.OptimalQuantity" class="form-control" />
+                <span asp-validation-for="Entity.OptimalQuantity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item.Price" class="control-label"></label>
-                <input asp-for="Item.Price" class="form-control" />
-                <span asp-validation-for="Item.Price" class="text-danger"></span>
+                <label asp-for="Entity.Price" class="control-label"></label>
+                @WebUtils.TextBoxForDecimal(Html, m => m.PriceString, Model.Entity?.Price)
             </div>
             <div class="form-group">
-                <label asp-for="Item.CategoryId" class="control-label"></label>
-                <select asp-for="Item.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <label asp-for="Entity.CategoryId" class="control-label">Category</label>
+                <select asp-for="Entity.CategoryId" class ="form-control" asp-items="@Model.Categories"></select>
+            </div>
+            <div>
+                <a asp-page="/Categories/Create" asp-route-ReturnToItemCreate="@bool.TrueString">Create new category</a>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -1,4 +1,6 @@
+using System.Globalization;
 using DAL;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,20 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// Configure cultures support
+var cultures = new[]
+{
+    new CultureInfo("en-US"),
+    new CultureInfo("et"),
+};
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = cultures,
+    SupportedUICultures = cultures
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
