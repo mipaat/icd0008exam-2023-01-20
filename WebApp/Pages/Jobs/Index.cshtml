@@ -12,18 +12,22 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Entities[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.Entities[0].TotalPrice)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Entities[0].Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.Entities[0].TotalPrice)
+        </th>
+        <th>
+            Sufficient resources?
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Entities) {
+    @foreach (var item in Model.Entities)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -32,12 +36,46 @@
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
+                @{ var missingItems = item.MissingItems(Model.Items); }
+                @if (missingItems.Count > 0)
+                {
+                    <div class="text-danger">
+                        No<br/>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td>Missing item</td>
+                                <td>Missing amount</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var missingItem in missingItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @missingItem.Item.Name
+                                    </td>
+                                    <td>
+                                        @missingItem.Quantity
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-success">Yes</div>
+                }
+            </td>
+            <td>
                 <a asp-page="./ManageItems" class="btn btn-primary" asp-route-id="@item.Id">Manage items</a>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

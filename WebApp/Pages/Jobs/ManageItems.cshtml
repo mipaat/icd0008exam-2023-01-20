@@ -26,7 +26,7 @@
                         <form method="post">
                             @Html.HiddenFor(m => m.Id)
                             @WebUtils.HiddenFor(Html, m => m.JobItemId, jobItem.Id)
-                            @WebUtils.TextBoxFor(Html, m => m.JobItemQuantity, jobItem.Quantity)
+                            Quantity: @WebUtils.TextBoxFor(Html, m => m.JobItemQuantity, jobItem.Quantity, "w-smallish")
                             @WebUtils.ButtonPrimaryFor(Html, m => m.UpdateJobItem, "Update")
                             @WebUtils.ButtonDangerFor(Html, m => m.RemoveJobItem, "Remove")
                         </form>
@@ -64,7 +64,7 @@
                             @WebUtils.HiddenFor(Html, m => m.JobItem.JobId, Model.Entity.Id)
                             @WebUtils.HiddenFor(Html, m => m.JobItem.ItemId, item.Id)
                             <div class="form-group d-flex gap-1">
-                                Quantity: <input asp-for="JobItem.Quantity" class="form-control w-small"/>
+                                Quantity: <input asp-for="JobItem.Quantity" class="form-control w-smallish"/>
                                 <span asp-validation-for="JobItem.Quantity" class="text-danger"></span>
                             </div>
                             @WebUtils.ButtonSuccessFor(Html, m => m.AddJobItem, "Add")

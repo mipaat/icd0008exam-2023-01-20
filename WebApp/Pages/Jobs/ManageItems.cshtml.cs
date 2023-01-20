@@ -52,8 +52,6 @@ public class ManageItems : EntityModel<Job>, IItemSearch
     {
         if (RemoveJobItem)
         {
-            Console.WriteLine("HERE");
-            Console.WriteLine(JobItemId);
             if (JobItemId == null) return Reset;
             await Ctx.JobItems.RemoveAsync(JobItemId.Value);
             await Ctx.SaveChangesAsync();

@@ -1,6 +1,7 @@
 using DAL;
 using DAL.Repositories;
 using Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.MyLibraries.PageModels;
@@ -13,5 +14,18 @@ public class IndexModel : IndexModel<Job>
     {
     }
 
+    public ICollection<Item> Items { get; set; } = default!;
+
     protected override JobRepository Repository => Ctx.Jobs;
+
+    public async Task InitializeItems()
+    {
+        Items = await Ctx.Items.GetAllAsync();
+    }
+
+    public override async Task<IActionResult> OnGetAsync()
+    {
+        await InitializeItems();
+        return await base.OnGetAsync();
+    }
 }

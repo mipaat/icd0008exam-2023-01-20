@@ -30,3 +30,9 @@ body {
   flex-basis: 3em;
   width: 3em;
 }
+
+.w-smallish {
+  flex-grow: 0;
+  flex-basis: 4em;
+  width: 4em;
+}
