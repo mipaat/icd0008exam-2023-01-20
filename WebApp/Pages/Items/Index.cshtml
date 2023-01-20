@@ -1,11 +1,41 @@
 @page
+@using WebApp.MyLibraries
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Items";
 }
 
-<h1>Index</h1>
+<h1>Items</h1>
+
+<div>
+    <form method="get" class="d-flex gap-1">
+        @{
+            const string itemNameQuery = nameof(Model.ItemNameQuery);
+            const string categoryNameQuery = nameof(Model.CategoryNameQuery);
+            const string minQuantityQuery = nameof(Model.MinQuantityQuery);
+            const string maxQuantityQuery = nameof(Model.MaxQuantityQuery);
+        }
+        <div>
+            <label for="@itemNameQuery">Search by item name(s)</label><br/>
+            <input id="@itemNameQuery" type="search" name="@itemNameQuery" value="@Model.ItemNameQuery"/>
+        </div>
+        <div>
+            <label for="@categoryNameQuery">Search by category name(s)</label><br/>
+            <input id="@categoryNameQuery" type="search" name="@categoryNameQuery" value="@Model.CategoryNameQuery"/>
+        </div>
+        <div>
+            <label for="@minQuantityQuery">Min quantity:</label><br/>
+            <input id="@minQuantityQuery" type="search" name="@minQuantityQuery" value="@Model.MinQuantityQuery"/>
+        </div>
+        <div>
+            <label for="@maxQuantityQuery">Max quantity:</label><br/>
+            <input id="@maxQuantityQuery" type="search" name="@maxQuantityQuery" value="@Model.MaxQuantityQuery"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-page="" class="btn btn-info">Clear filters</a>
+    </form>
+</div>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,22 +44,23 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Item[0].Name)
+                @Html.DisplayNameFor(model => model.Entities[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Item[0].OptimalQuantity)
+                @Html.DisplayNameFor(model => model.Entities[0].OptimalQuantity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Item[0].Price)
+                @Html.DisplayNameFor(model => model.Entities[0].Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Item[0].Category)
+                @Html.DisplayNameFor(model => model.Entities[0].Category)
             </th>
+            <th>Stock</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Item) {
+@foreach (var item in Model.Entities) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -42,6 +73,26 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category!.Name)
+            </td>
+            <td>
+                <div class="card card-body">
+                    Total quantity: @item.Quantity
+                </div>
+                <div>
+                    <a class="btn btn-primary" asp-page="./ManageStock" asp-route-id="@item.Id">Manage stock</a>
+                </div>
+                @if (item.ItemInStocks!.Count > 0)
+                {
+                    <div class="d-flex flex-column @CssCombos.InnerContainer">
+                        @foreach (var itemInStock in item.ItemInStocks!)
+                        {
+                            <div>
+                                Location: <span class="btn btn-primary fake-btn">@itemInStock.Location</span>
+                                Quantity: <span class="btn btn-primary fake-btn">@itemInStock.Quantity</span>
+                            </div>
+                        }
+                    </div>
+                }
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using DAL.Filters;
+using Domain;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -113,7 +114,7 @@ public static class WebUtils
         int decimals = 2, string @class = "", bool appendValidationMessage = true)
     {
         var propertyName = GetPropertyName(htmlHelper, expression);
-        
+
         @class = SingleSpaces(@class);
         string step;
         if (decimals < 0)
@@ -189,5 +190,40 @@ public static class WebUtils
         Expression<Func<TModel, bool>> expression, string? text = null, string @class = "")
     {
         return ButtonFor(htmlHelper, expression, text, @class + " btn-success");
+    }
+
+    public static List<FilterFunc<TEntity>> GetFiltersFromQuery<TEntity>(string? query,
+        Expression<Func<TEntity, string?>> expression)
+        where TEntity : AbstractDbEntity
+    {
+        var result = new List<FilterFunc<TEntity>>();
+        if (query == null) return result;
+        var queryStrings = query.Split(",").Select(s => s.Trim());
+        foreach (var queryString in queryStrings)
+        {
+            var exclude = false;
+            var processedString = queryString.ToLower();
+            if (queryString.StartsWith("!"))
+            {
+                exclude = true;
+                processedString = queryString.ToLower().Substring(1, queryString.Length - 1);
+            }
+
+            result.Add(exclude
+                ? new FilterFunc<TEntity>(iq => iq
+                        .Where(e => !StringContains(processedString, expression.Compile().Invoke(e))),
+                    false)
+                : new FilterFunc<TEntity>(iq => iq
+                        .Where(e => StringContains(processedString, expression.Compile().Invoke(e))),
+                    false));
+        }
+
+        return result;
+    }
+    
+    private static bool StringContains(string needle, string? haystack)
+    {
+        if (haystack == null) return false;
+        return haystack.ToLower().Contains(needle.ToLower());
     }
 }

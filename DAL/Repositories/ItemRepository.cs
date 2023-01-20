@@ -10,4 +10,13 @@ public class ItemRepository : AbstractDbRepository<Item>
     }
 
     protected override DbSet<Item> ThisDbSet => DbContext.Items;
+
+    protected override IQueryable<Item> DefaultIncludes(IQueryable<Item> queryable)
+    {
+        return queryable
+            .Include(i => i.Category)
+            .Include(i => i.ItemInStocks)
+            .Include(i => i.JobItems)!
+            .ThenInclude(ji => ji.Job);
+    }
 }
