@@ -2,7 +2,7 @@
 
 @if (Model.MissingItems.Count > 0)
 {
-    <div class="text-danger">
+    <div class="text-danger border border-1 border-danger rounded-3 p-2">
         Missing items:
         @foreach (var missingItem in Model.MissingItems)
         {

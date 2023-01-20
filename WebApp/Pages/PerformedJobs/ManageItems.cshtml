@@ -44,7 +44,7 @@ else
     }
     else
     {
-        <div class="btn btn-outline-danger mb-4">Can't perform job (items missing from stock)</div>
+        <div class="btn btn-outline-danger fake-btn mb-4">Can't perform job (items missing from stock)</div>
     }
     <div>
         @{
@@ -59,7 +59,7 @@ else
                 @foreach (var item in Model.Entity.UsedItems!)
                 {
                     <div class="@CssCombos.InnerContainer">
-                        Item: @item.Item!.Name, Price: @item.Item.Price, Amount available: @item.Quantity
+                        Item: @item.Item!.Name, Price: @item.Item.Price, Amount available: @item.Item.Quantity
                         <form method="post">
                             @Html.HiddenFor(m => m.Id)
                             @WebUtils.HiddenFor(Html, m => m.UsedItemId, item.Id)
@@ -84,7 +84,7 @@ else
                 @foreach (var item in Model.UnusedItems)
                 {
                     <div class="@CssCombos.InnerContainer d-flex gap-3">
-                        Name: @item.Name
+                        Name: @item.Name, Price: @item.Price, Amount available: @item.Quantity
                         <form method="post" class="d-flex gap-3">
                             @Html.HiddenFor(m => m.Id)
                             @WebUtils.HiddenFor(Html, m => m.UsedItem.ItemId, item.Id)
