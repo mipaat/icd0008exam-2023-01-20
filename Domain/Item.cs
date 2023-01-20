@@ -16,4 +16,7 @@ public class Item : AbstractDbEntity
     
     public ICollection<JobItem>? JobItems { get; set; }
     [NotMapped] public ICollection<Job>? Jobs => JobItems?.Select(ji => ji.Job!).ToList();
+
+    [NotMapped] public int? MissingQuantity => OptimalQuantity - Quantity;
+    [NotMapped] public bool? IsMissingQuantity => MissingQuantity >= 0;
 }

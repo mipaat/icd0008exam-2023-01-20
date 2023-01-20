@@ -67,9 +67,10 @@ public static class WebUtils
         string @class = "", bool appendValidationMessage = true)
     {
         var propertyName = GetPropertyName(htmlHelper, expression);
+        var propertyType = typeof(TProperty);
 
         @class = SingleSpaces(@class);
-        var htmlAttributes = new { @class, type = typeof(TProperty) == typeof(int) ? "number" : "text" };
+        var htmlAttributes = new { @class, type = propertyType == typeof(int) || propertyType == typeof(int?) ? "number" : "text" };
 
         var contentBuilder = new HtmlContentBuilder()
             .AppendHtml(htmlHelper.TextBox(propertyName, value, htmlAttributes));

@@ -13,29 +13,53 @@
 @if (Model.Entity.Performed != null)
 {
     <div class="row justify-content-center">
-        <div class="col-md-5">
+        <div class="col-md-5 text-center">
             <h4>Items used</h4>
-            @foreach (var item in Model.Entity.UsedItems!)
+            <h6>Total price: @Model.Entity.UsedItems!.Sum(ui => ui.TotalCost)</h6>
+            @if (Model.Entity.UsedItems!.Count > 0)
             {
-                <pre>
-                    Name: @item.Item!.Name
-                    Quantity: @item.Quantity
-                </pre>
+                <div class="d-flex justify-content-center">
+                    @foreach (var item in Model.Entity.UsedItems!)
+                    {
+                        <div class="border border-1 rounded-3 p-2">
+                            <div>Name: @item.Item!.Name</div>
+                            <div>Quantity: @item.Quantity</div>
+                            <div>Price: @item.Item!.Price</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <h3>No items!</h3>
             }
         </div>
     </div>
 }
 else
 {
-    <a class="btn btn-outline-danger" asp-page="./Perform" asp-route-id="@Model.Id">Perform job (will disable further editing!)</a>
+    @if (Model.MissingItems.Count == 0)
+    {
+        <a class="btn btn-outline-danger mb-4" asp-page="./Perform" asp-route-id="@Model.Id">Perform job (will consume items and disable further editing!)</a>
+    }
+    else
+    {
+        <div class="btn btn-outline-danger mb-4">Can't perform job (items missing from stock)</div>
+    }
+    <div>
+        @{
+            await Html.RenderPartialAsync("Shared/MissingItems");
+        }
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-5">
             <h4>Items used</h4>
-            <div class="@CssCombos.ExternalContainer">
+            <h6>Total price: @Model.Entity.UsedItems!.Sum(ui => ui.TotalCost)</h6>
+            <div class="@CssCombos.ExternalContainer mt-4">
                 @foreach (var item in Model.Entity.UsedItems!)
                 {
                     <div class="@CssCombos.InnerContainer">
-                        Item: @item.Item!.Name
+                        Item: @item.Item!.Name, Price: @item.Item.Price, Amount available: @item.Quantity
                         <form method="post">
                             @Html.HiddenFor(m => m.Id)
                             @WebUtils.HiddenFor(Html, m => m.UsedItemId, item.Id)
@@ -56,8 +80,8 @@ else
                 };
                 await Html.RenderPartialAsync("Shared/ItemSearch");
             }
-            <div class="@CssCombos.ExternalContainer">
-                @foreach (var item in Model.Items)
+            <div class="@CssCombos.ExternalContainer d-flex flex-column mt-4">
+                @foreach (var item in Model.UnusedItems)
                 {
                     <div class="@CssCombos.InnerContainer d-flex gap-3">
                         Name: @item.Name

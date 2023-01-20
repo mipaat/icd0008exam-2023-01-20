@@ -21,6 +21,8 @@ public class IndexModel : IndexModel<PerformedJob>
 
     [BindProperty(SupportsGet = true)] public string? ContextQuery { get; set; }
 
+    public List<ItemWithQuantity> SpentItems { get; set; } = default!;
+
     protected override IEnumerable<FilterFunc<PerformedJob>> Filters
     {
         get
@@ -29,5 +31,35 @@ public class IndexModel : IndexModel<PerformedJob>
             result.AddRange(WebUtils.GetFiltersFromQuery<PerformedJob>(ContextQuery, pj => pj.Context));
             return result;
         }
+    }
+
+    private void InitializeSpentItems()
+    {
+        SpentItems = new List<ItemWithQuantity>();
+        foreach (var performedJob in Entities)
+        {
+            foreach (var usedItem in performedJob.UsedItems!)
+            {
+                var spentItem = SpentItems.FirstOrDefault(i => i.Item.Id == usedItem.ItemId);
+                if (spentItem == null)
+                {
+                    spentItem = new ItemWithQuantity(usedItem.Item!, usedItem.Quantity);
+                    SpentItems.Add(spentItem);
+                }
+                else
+                {
+                    spentItem.Quantity += usedItem.Quantity;
+                }
+            }
+        }
+    }
+
+    public override async Task<IActionResult> OnGetAsync()
+    {
+        var result = await base.OnGetAsync();
+
+        InitializeSpentItems();
+        
+        return result;
     }
 }

@@ -7,7 +7,7 @@ using WebApp.Pages.Shared;
 
 namespace WebApp.Pages.PerformedJobs;
 
-public class ManageItems : EntityModel<PerformedJob>, IItemSearch, IErrorView
+public class ManageItems : EntityModel<PerformedJob>, IItemSearch, IErrorView, IMissingItems
 {
     public ManageItems(RepositoryContext ctx) : base(ctx)
     {
@@ -19,6 +19,7 @@ public class ManageItems : EntityModel<PerformedJob>, IItemSearch, IErrorView
     protected override PerformedJobRepository Repository => Ctx.PerformedJobs;
 
     public ICollection<Item> Items { get; set; } = default!;
+    public ICollection<Item> UnusedItems => Items.Where(i => Entity.UsedItems!.All(ui => ui.ItemId != i.Id)).ToList();
     [BindProperty(SupportsGet = true)] public string? ItemNameQuery { get; set; }
     [BindProperty(SupportsGet = true)] public string? CategoryNameQuery { get; set; }
     [BindProperty(SupportsGet = true)] public int? MinQuantityQuery { get; set; }
@@ -34,9 +35,7 @@ public class ManageItems : EntityModel<PerformedJob>, IItemSearch, IErrorView
 
     private async Task InitializeItems()
     {
-        Items = (await Ctx.Items.GetAllAsync(IItemSearch.Filters(this).ToArray()))
-            .Where(i => Entity.UsedItems!.All(ui => ui.ItemId != i.Id))
-            .ToList();
+        Items = await Ctx.Items.GetAllAsync();
     }
 
     public override async Task<IActionResult> OnGetAsync()
@@ -95,4 +94,6 @@ public class ManageItems : EntityModel<PerformedJob>, IItemSearch, IErrorView
 
         return Reset;
     }
+
+    public ICollection<ItemWithQuantity> MissingItems => Entity.MissingItems(Items);
 }

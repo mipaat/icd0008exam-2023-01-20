@@ -2,31 +2,33 @@
 @model IItemSearch
 
 <div class="d-flex gap-1">
-    <form method="get" class="d-flex gap-1">
-        @HiddenFields
-        @{
-            const string itemNameQuery = nameof(Model.ItemNameQuery);
-            const string categoryNameQuery = nameof(Model.CategoryNameQuery);
-            const string minQuantityQuery = nameof(Model.MinQuantityQuery);
-            const string maxQuantityQuery = nameof(Model.MaxQuantityQuery);
-        }
-        <div>
-            <label for="@itemNameQuery">Search by item name(s)</label><br/>
-            <input id="@itemNameQuery" type="search" name="@itemNameQuery" value="@Model.ItemNameQuery"/>
+    <form method="get">
+        <div class="d-flex gap-1">
+            @HiddenFields
+            @{
+                const string itemNameQuery = nameof(Model.ItemNameQuery);
+                const string categoryNameQuery = nameof(Model.CategoryNameQuery);
+                const string minQuantityQuery = nameof(Model.MinQuantityQuery);
+                const string maxQuantityQuery = nameof(Model.MaxQuantityQuery);
+            }
+            <div>
+                <label for="@itemNameQuery">Search by item name(s)</label><br/>
+                <input id="@itemNameQuery" type="search" name="@itemNameQuery" value="@Model.ItemNameQuery"/>
+            </div>
+            <div>
+                <label for="@categoryNameQuery">Search by category name(s)</label><br/>
+                <input id="@categoryNameQuery" type="search" name="@categoryNameQuery" value="@Model.CategoryNameQuery"/>
+            </div>
+            <div>
+                <label for="@minQuantityQuery">Min quantity:</label><br/>
+                <input id="@minQuantityQuery" type="search" name="@minQuantityQuery" value="@Model.MinQuantityQuery"/>
+            </div>
+            <div>
+                <label for="@maxQuantityQuery">Max quantity:</label><br/>
+                <input id="@maxQuantityQuery" type="search" name="@maxQuantityQuery" value="@Model.MaxQuantityQuery"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
         </div>
-        <div>
-            <label for="@categoryNameQuery">Search by category name(s)</label><br/>
-            <input id="@categoryNameQuery" type="search" name="@categoryNameQuery" value="@Model.CategoryNameQuery"/>
-        </div>
-        <div>
-            <label for="@minQuantityQuery">Min quantity:</label><br/>
-            <input id="@minQuantityQuery" type="search" name="@minQuantityQuery" value="@Model.MinQuantityQuery"/>
-        </div>
-        <div>
-            <label for="@maxQuantityQuery">Max quantity:</label><br/>
-            <input id="@maxQuantityQuery" type="search" name="@maxQuantityQuery" value="@Model.MaxQuantityQuery"/>
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
     </form>
     <form>
         @HiddenFields

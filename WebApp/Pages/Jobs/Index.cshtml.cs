@@ -2,8 +2,6 @@ using DAL;
 using DAL.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using WebApp.MyLibraries.PageModels;
 
 namespace WebApp.Pages.Jobs;
@@ -15,6 +13,7 @@ public class IndexModel : IndexModel<Job>
     }
 
     public ICollection<Item> Items { get; set; } = default!;
+    public ICollection<ItemWithQuantity> SpentItems { get; set; } = default!;
 
     protected override JobRepository Repository => Ctx.Jobs;
 

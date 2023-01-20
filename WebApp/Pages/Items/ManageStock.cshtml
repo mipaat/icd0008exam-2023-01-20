@@ -7,22 +7,28 @@
 }
 
 <h2>Stock for item "@Model.Entity.Name" (Category: @Model.Entity.Category!.Name, Price: @Model.Entity.Price)</h2>
-<a asp-page="./Index">Back to items list</a>
+<a class="pb-4" asp-page="./Index">Back to items list</a>
 
-<div class="row justify-content-center">
+<div class="row justify-content-center pt-4 gap-md-3">
     <div class="col-md-5 @CssCombos.ExternalContainer">
         <h4>Stock</h4>
         Total: @Model.Entity.Quantity
-        <div>
+        <div class="d-flex flex-column gap-2">
             @foreach (var itemInStock in Model.Entity.ItemInStocks!)
             {
                 <div class="@CssCombos.InnerContainer">
                     <form method="post">
                         @WebUtils.HiddenFor(Html, m => m.ItemInStockId, itemInStock.Id)
-                        Location: @WebUtils.TextBoxFor(Html, m => m.Location, itemInStock.Location)
-                        Quantity: @WebUtils.TextBoxFor(Html, m => m.Quantity, itemInStock.Quantity)
-                        @WebUtils.ButtonPrimaryFor(Html, m => m.UpdateItemInStock, "Update")
-                        @WebUtils.ButtonDangerFor(Html, m => m.RemoveItemInStock, "Remove")
+                        <div>
+                            Location: @WebUtils.TextBoxFor(Html, m => m.Location, itemInStock.Location)
+                        </div>
+                        <div>
+                            Quantity: @WebUtils.TextBoxFor(Html, m => m.Quantity, itemInStock.Quantity, "w-small")
+                        </div>
+                        <div class="pt-3">
+                            @WebUtils.ButtonPrimaryFor(Html, m => m.UpdateItemInStock, "Update")
+                            @WebUtils.ButtonDangerFor(Html, m => m.RemoveItemInStock, "Remove")
+                        </div>
                     </form>
                 </div>
             }
@@ -44,7 +50,7 @@
                     <input asp-for="ItemInStock.Location" class="form-control" />
                     <span asp-validation-for="ItemInStock.Location" class="text-danger"></span>
                 </div>
-                @WebUtils.ButtonSuccessFor(Html, m => m.AddItemInStock, "Add")
+                @WebUtils.ButtonSuccessFor(Html, m => m.AddItemInStock, "Add", "mt-3")
             </form>
         </div>
     </div>

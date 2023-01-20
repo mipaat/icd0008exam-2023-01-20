@@ -50,14 +50,11 @@
             </td>
             <td>
                 <div class="card card-body">
-                    Total quantity: @item.Quantity
-                </div>
-                <div>
-                    <a class="btn btn-primary" asp-page="./ManageStock" asp-route-id="@item.Id">Manage stock</a>
+                    Total quantity: @item.Quantity @if(item.IsMissingQuantity!.Value) {<span class="text-danger">(Missing @item.MissingQuantity of optimal @item.OptimalQuantity)</span>}
                 </div>
                 @if (item.ItemInStocks!.Count > 0)
                 {
-                    <div class="d-flex flex-column @CssCombos.InnerContainer">
+                    <div class="d-flex flex-column gap-1 @CssCombos.InnerContainer">
                         @foreach (var itemInStock in item.ItemInStocks!)
                         {
                             <div>
@@ -72,9 +69,9 @@
                 }
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-primary" asp-page="./ManageStock" asp-route-id="@item.Id">Manage stock</a>
+                <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

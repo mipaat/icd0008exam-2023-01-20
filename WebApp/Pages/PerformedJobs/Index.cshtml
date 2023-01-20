@@ -5,12 +5,31 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Performed jobs";
 }
 
-<h1>Index</h1>
+<h1>Performed jobs</h1>
 
-<div class="d-flex gap-4">
+<div class="border border-2 rounded-3 m-3 p-2">
+    <div>Total cost: @Model.Entities.Sum(j => j.Cost)</div>
+    <div>
+        Total items used: @Model.SpentItems.Sum(si => si.Quantity)
+        @if (Model.SpentItems.Count > 0)
+        {
+            <div>
+                Items used:
+                <div class="d-flex gap-1">
+                    @foreach (var spentItem in Model.SpentItems)
+                    {
+                        <div class="btn btn-outline-dark fake-btn">@spentItem.Item.Name (@spentItem.Quantity)</div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="d-flex gap-4 m-2 mb-4">
     <form method="GET" class="d-flex gap-4">
         @{
             const string completionFilter = nameof(Model.PerformedJobCompletionFilter);
@@ -32,7 +51,7 @@
 </div>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a class="btn btn-primary" asp-page="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -62,7 +81,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Performed)
+                @(item.Performed.ToString() ?? "Not performed yet")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Context)
@@ -74,9 +93,8 @@
                 @Html.DisplayFor(modelItem => item.Job!.Name)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-primary" asp-page="./ManageItems" asp-route-id="@item.Id">Items</a>
+                <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

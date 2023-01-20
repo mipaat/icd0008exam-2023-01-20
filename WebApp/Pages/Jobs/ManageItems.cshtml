@@ -8,7 +8,7 @@
     ViewData["Title"] = "Manage job items";
 }
 
-<h2>Manage items for Job @Model.Entity.Name</h2>
+<h2 class="mb-4">Items for predefined job '@Model.Entity.Name'</h2>
 
 <div class="row justify-content-center">
     <div class="col-md-5">
@@ -57,7 +57,7 @@
                 @foreach (var item in Model.Items)
                 {
                     <div class="@CssCombos.InnerContainer">
-                        Name: @item.Name
+                        Name: @item.Name, Price: @item.Price
                         <form method="post" class="d-flex gap-2">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             @Html.HiddenFor(m => m.Id)
